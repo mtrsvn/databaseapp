@@ -3,13 +3,15 @@ require_once('classes/database.php');
 $con = new database();
 
 $sweetAlertConfig = "";
+
 if (isset($_POST['register'])) {
+
   $username = $_POST['username'];
   $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
   $firstname = $_POST['first_name'];
   $lastname = $_POST['last_name'];
 
-  $userID = $con->signupUser($firstname, $lastname, $username, $password);
+  $userID = $con->signupUser($username, $password, $firstname, $lastname);
 
   if ($userID) {
     $sweetAlertConfig = "
@@ -19,23 +21,25 @@ if (isset($_POST['register'])) {
           title: 'Registration Successful',
           text: 'You have successfully registered as an admin.',
           confirmButtonText: 'OK'
-      }).then(()=>{
-      window.location.href = 'login.php'
-      });
-      </script>";
+        }).then(() => {
+          window.location.href = 'login.php';
+        });
+        </script>
+        ";
   } else {
     $sweetAlertConfig = "
-        <script>
+         <script>
         Swal.fire({
-        icon: 'error',
-        title: 'Registration Failed',
-        text: 'An error occured during registration. Please try again.',
-        confirmButtonText: 'OK'
+          icon: 'error',
+          title: 'Registration Failed',
+          text: 'An error occurred during registration. Please try again.',
+          confirmButtonText: 'OK'
         });
-        </script>";
+        </script>"
+
+    ;
   }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,12 +81,13 @@ if (isset($_POST['register'])) {
         <div class="invalid-feedback">Password must be at least 6 characters long, include an uppercase letter, a
           number, and a special character.</div>
       </div>
-      <button type="submit" class="btn btn-primary w-100">Register</button>
+      <button type="submit" id="registerButton" name="register" class="btn btn-primary w-100">Register</button>
     </form>
   </div>
 
   <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
   <script src="./package/dist/sweetalert2.js"></script>
+  <?php echo $sweetAlertConfig; ?>
   <script>
     // Function to validate individual fields
     function validateField(field, validationFn) {
@@ -100,25 +105,25 @@ if (isset($_POST['register'])) {
     // Validation functions for each field
     const isNotEmpty = (value) => value.trim() !== '';
     const isPasswordValid = (value) => {
-      // Regular expression for password validation
       const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
       return passwordRegex.test(value);
     };
 
-    //Real-time username validation using AJAX
+    // Real-time username validation using AJAX
     const checkUsernameAvailability = (usernameField) => {
       usernameField.addEventListener('input', () => {
         const username = usernameField.value.trim();
 
         if (username === '') {
           usernameField.classList.remove('is-valid');
-          usernameField.classList.remove('is-invalid');
+          usernameField.classList.add('is-invalid');
           usernameField.nextElementSibling.textContent = 'Username is required.';
+          registerButton.disabled = true; //disabled the button
           return;
         }
 
-        // Send AJAX request to CheckUsernameAvailability
-        fetch('AJAX/check_username.php', {
+        // Send AJAX request to check username availability
+        fetch('ajax/check_username.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -131,14 +136,17 @@ if (isset($_POST['register'])) {
               usernameField.classList.remove('is-valid');
               usernameField.classList.add('is-invalid');
               usernameField.nextElementSibling.textContent = 'Username is already taken.';
+              registerButton.disabled = true; //disabled the button
             } else {
               usernameField.classList.remove('is-invalid');
               usernameField.classList.add('is-valid');
               usernameField.nextElementSibling.textContent = '';
+              registerButton.disabled = false; //disabled the button
             }
           })
           .catch((error) => {
-            console.error('Error: ', error);
+            console.error('Error:', error);
+            registerButton.disabled = true; //disabled the button
           });
       });
     };
@@ -157,12 +165,12 @@ if (isset($_POST['register'])) {
 
     // Form submission validation
     document.getElementById('registrationForm').addEventListener('submit', function (e) {
-      e.preventDefault(); // Prevent form submission for validation
+      // e.preventDefault(); // Prevent form submission for validation
 
       let isValid = true;
 
       // Validate all fields on submit
-      [firstName, lastName, username, password].forEach(field => {
+      [firstName, lastName, username, password].forEach((field) => {
         if (!field.classList.contains('is-valid')) {
           field.classList.add('is-invalid');
           isValid = false;
@@ -175,6 +183,8 @@ if (isset($_POST['register'])) {
       }
     });
   </script>
+
+
 </body>
 
 </html>
