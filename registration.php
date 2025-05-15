@@ -1,4 +1,4 @@
-<?php.
+<?php
 require_once('classes/database.php');
 $con = new database();
 

@@ -33,5 +33,6 @@ class database {
         $stmt = $con->prepare("SELECT COUNT(*) FROM Admin WHERE admin_username = ?");
         $stmt->execute([$username]);
         $count = $stmt->fetchColumn();
+        return $count > 0;
         }
 }
