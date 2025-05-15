@@ -29,7 +29,7 @@
         <tr>
           <td>1</td>
           <td>Jei Q. Pastrana</td>
-          <td>jei@example.com</td>
+          <td>jeisquared@example.com</td>
           <td>DIT</td>
           <td>
             <button class="btn btn-sm btn-warning">Edit</button>
