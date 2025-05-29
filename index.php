@@ -1,20 +1,29 @@
 <?php
-    require_once('classes/database.php');
-    $con = new database();
+session_start();
+if (!isset($_SESSION['admin_id'])) {
 
-    $data = $con->opencon();
+  header('Location: login.php');
+  exit();
+}
+require_once('classes/database.php');
+$con = new database();
+
+$data = $con->opencon();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Student & Course CRUD (PHP PDO)</title>
   <link rel="stylesheet" href="./bootstrap-5.3.3-dist/css/bootstrap.css">
 </head>
+
 <body class="bg-light">
   <div class="container py-5">
     <h2 class="mb-4 text-center">Student Records</h2>
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add New Student</button>
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add New
+      Student</button>
     <table class="table table-bordered table-hover bg-white">
       <thead class="table-dark">
         <tr>
@@ -62,7 +71,8 @@
     </table>
 
     <h2 class="mb-4 mt-5">Enrollments</h2>
-    <button class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#enrollStudentModal">Enroll Student</button>
+    <button class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#enrollStudentModal">Enroll
+      Student</button>
     <table class="table table-bordered table-hover bg-white">
       <thead class="table-dark">
         <tr>
@@ -136,7 +146,7 @@
         <div class="modal-body">
           <input type="text" name="student_id" class="form-control mb-2" placeholder="Student ID" required>
           <input type="text" disabled name="student_name" class="form-control mb-2" placeholder="Student Name" required>
-          
+
           <select name="course_id" class="form-control" required>
             <option value="">Select Course</option>
             <option value="1">Computer Science</option>
@@ -144,7 +154,7 @@
             <option value="3">Software Engineering</option>
             <option value="4">Data Science</option>
           </select>
-          
+
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-info">Enroll</button>
@@ -155,4 +165,5 @@
 
   <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
+
 </html>

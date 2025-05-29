@@ -1,8 +1,10 @@
 <?php
 
-class database {
+class database
+{
 
-    function opencon() {
+    function opencon()
+    {
         return new PDO(
             'mysql:host=localhost;dbname=dbs_app',
             'root',
@@ -10,7 +12,8 @@ class database {
         );
     }
 
-    function signupUser($username, $email, $password, $firstname, $lastname) {
+    function signupUser($username, $email, $password, $firstname, $lastname)
+    {
         $con = $this->opencon();
 
         try {
@@ -28,19 +31,35 @@ class database {
             return false;
         }
     }
-    function isUsernameExists ($username) {
+
+    function isUsernameExists($username)
+    {
         $con = $this->opencon();
         $stmt = $con->prepare("SELECT COUNT(*) FROM Admin WHERE admin_username = ?");
         $stmt->execute([$username]);
         $count = $stmt->fetchColumn();
         return $count > 0;
-        }
+    }
 
-        function isEmailExists ($email) {
+    function isEmailExists($email)
+    {
         $con = $this->opencon();
         $stmt = $con->prepare("SELECT COUNT(*) FROM Admin WHERE email = ?");
         $stmt->execute([$email]);
         $count = $stmt->fetchColumn();
         return $count > 0;
+    }
+
+    function loginUser($username, $password)
+    {
+        $con = $this->opencon();
+        $stmt = $con->prepare("SELECT * FROM Admin WHERE admin_username = ?");
+        $stmt->execute([$username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user && password_verify($password, $user['admin_password'])) {
+            return $user;
         }
+        return false;
+    }
 }
+?>
