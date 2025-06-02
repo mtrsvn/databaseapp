@@ -1,29 +1,26 @@
 <?php
 
-session_start();
-if (!isset($_SESSION['admin_ID'])){
-header('Location: login.php');
-exit();
+  session_start();
+  if (!isset($_SESSION['admin_ID'])) {
+    header('Location: login.php');
+    exit();
+  }
 
-
-
-}
     require_once('classes/database.php');
     $con = new database();
 
     $data = $con->opencon();
 
-    $sweetAlertConfig = "";
+$sweetAlertConfig = "";
 
-     if (isset($_POST['add_student'])){
-
-
+    if (isset($_POST['add_student'])){
+     
       $firstname = $_POST['first_name'];
       $lastname = $_POST['last_name'];
       $email = $_POST['email'];
-       $admin_id = $_SESSION['admin_ID'];
+      $admin_id = $_SESSION['admin_ID'];
  
-      $userID = $con->addstudent($firstname, $lastname, $email,$admin_id);
+      $userID = $con->addStudent($firstname, $lastname, $email, $admin_id);
      
       if ($userID) {
         $sweetAlertConfig = "
@@ -31,7 +28,7 @@ exit();
         Swal.fire({
           icon: 'success',
           title: 'Registration Successful',
-          text: 'You have successfully registered as an admin.',
+          text: 'You have successfully registered a new student.',
           confirmButtonText: 'OK'
         }).then(() => {
           window.location.href = 'login.php';
@@ -48,11 +45,9 @@ exit();
         </script>";
       }
     }
-    
 
     if (isset($_POST['add_course'])){
-
-
+     
       $course_name = $_POST['course_name'];
       $admin_id = $_SESSION['admin_ID'];
  
@@ -64,7 +59,7 @@ exit();
         Swal.fire({
           icon: 'success',
           title: 'Registration Successful',
-          text: 'You have successfully registered as an admin.',
+          text: 'You have successfully registered a new student.',
           confirmButtonText: 'OK'
         }).then(() => {
           window.location.href = 'login.php';
@@ -81,9 +76,7 @@ exit();
         </script>";
       }
     }
-    
-?>
-
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -179,13 +172,12 @@ exit();
           <input type="text" name="first_name" class="form-control mb-2" placeholder="First Name" required>
           <input type="text" name="last_name" class="form-control mb-2" placeholder="Last Name" required>
           <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
-          
         </div>
         <div class="modal-footer">
           <button type="submit" name="add_student">Add</button>
         </div>
         <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
-   <script src="./package/dist/sweetalert2.js"></script>
+  <script src="./package/dist/sweetalert2.js"></script>
     <?php echo $sweetAlertConfig; ?>
       </form>
     </div>
@@ -238,6 +230,5 @@ exit();
   </div>
 
   <script src="./bootstrap-5.3.3-dist/js/bootstrap.js"></script>
-  
 </body>
 </html>
